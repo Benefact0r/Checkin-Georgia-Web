@@ -78,13 +78,12 @@ export default async function VenuePage({ params }: PageProps) {
                   <p className="font-semibold">
                     {formatPrice(s.price_minor, s.currency)}
                   </p>
-                  <button
-                    type="button"
-                    disabled
-                    className="mt-2 cursor-not-allowed rounded-lg bg-brand px-4 py-1.5 text-xs font-medium text-white opacity-60"
+                  <Link
+                    href={`/venues/${venue.slug}/book?service=${s.id}`}
+                    className="mt-2 inline-block rounded-lg bg-brand px-4 py-1.5 text-xs font-medium text-white transition hover:bg-brand-dark"
                   >
-                    დაჯავშნა (TODO)
-                  </button>
+                    დაჯავშნა
+                  </Link>
                 </div>
               </li>
             ))}
@@ -92,29 +91,8 @@ export default async function VenuePage({ params }: PageProps) {
         </section>
       )}
 
-      {/* Payment buttons placeholder — wire to /payments/mock once booking flow is built */}
-      <section className="mt-10 rounded-2xl border border-dashed border-slate-300 p-5">
-        <p className="text-sm font-semibold text-slate-700">
-          გადახდის ღილაკები (placeholder)
-        </p>
-        <p className="mt-1 text-xs text-slate-500">
-          Hit{" "}
-          <code className="rounded bg-slate-100 px-1">POST /payments/mock</code>{" "}
-          once a booking exists. რეალური BOG/TBC მერე.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {(["bog", "tbc", "apple_pay", "google_pay"] as const).map((p) => (
-            <button
-              key={p}
-              type="button"
-              disabled
-              className="cursor-not-allowed rounded-lg border border-slate-300 px-4 py-2 text-sm opacity-60"
-            >
-              {p}
-            </button>
-          ))}
-        </div>
-      </section>
+      {/* Payment buttons moved to /bookings/[id] success page now that the
+          booking flow is wired up. */}
     </main>
   );
 }

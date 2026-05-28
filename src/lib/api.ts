@@ -76,3 +76,65 @@ export function formatPrice(minor: number | null, currency = "GEL"): string {
   const major = minor / 100;
   return `${major.toFixed(0)} ${currency}`;
 }
+
+export type BookingStatus =
+  | "pending"
+  | "confirmed"
+  | "cancelled"
+  | "completed"
+  | "no_show";
+
+export type PaymentProvider =
+  | "bog"
+  | "tbc"
+  | "apple_pay"
+  | "google_pay"
+  | "mock";
+
+export interface PaymentRow {
+  id: string;
+  provider: PaymentProvider;
+  status: "pending" | "succeeded" | "failed" | "refunded";
+  amount_minor: number;
+  created_at: string;
+  is_mock: boolean;
+}
+
+export interface BookingDetail {
+  id: string;
+  user_id: string | null;
+  guest_name: string | null;
+  guest_phone: string | null;
+  starts_at: string;
+  ends_at: string;
+  party_size: number;
+  notes: string | null;
+  total_minor: string | number;
+  currency: string;
+  status: BookingStatus;
+  confirmed_at: string | null;
+  cancelled_at: string | null;
+  created_at: string;
+  // joins
+  venue_id: string;
+  venue_slug: string;
+  venue_name: string;
+  vertical: Vertical;
+  venue_address: string;
+  service_id: string;
+  service_name: string;
+  duration_minutes: number | null;
+  payment_mode: "on_site" | "deposit" | "prepay";
+  resource_id: string;
+  resource_name: string;
+  resource_kind: string;
+  payments: PaymentRow[] | null;
+}
+
+export async function getBooking(id: string): Promise<BookingDetail> {
+  const res = await fetch(`${API_URL}/bookings/${id}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`booking_fetch_failed: ${res.status}`);
+  return res.json();
+}
+
+export const apiUrl = API_URL;

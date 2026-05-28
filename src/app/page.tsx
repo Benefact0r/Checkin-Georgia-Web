@@ -65,7 +65,10 @@ export default async function Home() {
           loaded.
         </p>
         <p className="mt-1 text-xs text-slate-400">
-          Build: {process.env.NEXT_PUBLIC_API_URL ?? "default"}
+          API: {process.env.NEXT_PUBLIC_API_URL ?? "default"}
+        </p>
+        <p className="mt-3 text-xs text-slate-400">
+          🟢 Auto-deployed via GitHub Actions
         </p>
       </footer>
     </main>

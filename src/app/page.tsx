@@ -56,11 +56,17 @@ export default async function Home() {
       </section>
 
       <footer className="mt-16 border-t border-slate-200 pt-6 text-sm text-slate-500">
-        Powered by{" "}
-        <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">
-          checkin-georgia-api
-        </code>{" "}
-        on Cloud Run.
+        <p>
+          Powered by{" "}
+          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">
+            checkin-georgia-api
+          </code>{" "}
+          on Cloud Run · {items.length} venue{items.length === 1 ? "" : "s"}{" "}
+          loaded.
+        </p>
+        <p className="mt-1 text-xs text-slate-400">
+          Build: {process.env.NEXT_PUBLIC_API_URL ?? "default"}
+        </p>
       </footer>
     </main>
   );

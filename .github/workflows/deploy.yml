@@ -1,0 +1,92 @@
+name: Deploy Web to Cloud Run
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  GCP_PROJECT_ID: checkin-georgia-dev
+  GCP_PROJECT_NUMBER: '171625154738'
+  WIF_PROVIDER: projects/171625154738/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+  DEPLOY_SA: gha-deploy@checkin-georgia-dev.iam.gserviceaccount.com
+  REGION: europe-west1
+  AR_REPO: checkin
+  IMAGE_NAME: web
+  RUN_SERVICE: checkin-georgia-web
+  RUN_SA: checkin-run-sa@checkin-georgia-dev.iam.gserviceaccount.com
+  API_URL: https://checkin-georgia-api-171625154738.europe-west1.run.app
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Compute image tag
+        id: tag
+        run: |
+          SHA="${GITHUB_SHA::7}"
+          IMAGE="${REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${AR_REPO}/${IMAGE_NAME}:${SHA}"
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+          echo "Image: $IMAGE"
+
+      - name: Build & push (Cloud Build)
+        run: |
+          gcloud builds submit \
+            --project=${GCP_PROJECT_ID} \
+            --tag=${{ steps.tag.outputs.image }} \
+            --machine-type=e2-medium \
+            .
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${RUN_SERVICE} \
+            --project=${GCP_PROJECT_ID} \
+            --region=${REGION} \
+            --image=${{ steps.tag.outputs.image }} \
+            --service-account=${RUN_SA} \
+            --set-env-vars="NODE_ENV=production,NEXT_PUBLIC_API_URL=${API_URL}" \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=3 \
+            --memory=512Mi \
+            --cpu=1 \
+            --timeout=60 \
+            --port=8080 \
+            --quiet
+
+      - name: Verify deployment
+        run: |
+          URL=$(gcloud run services describe ${RUN_SERVICE} --project=${GCP_PROJECT_ID} --region=${REGION} --format='value(status.url)')
+          echo "Deployed: $URL"
+          for i in $(seq 1 10); do
+            CODE=$(curl -s -o /tmp/body -w '%{http_code}' "$URL/" || true)
+            if [ "$CODE" = "200" ]; then
+              echo "✓ / 200"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "✗ / did not return 200"
+          cat /tmp/body || true
+          exit 1

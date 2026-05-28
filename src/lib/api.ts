@@ -12,6 +12,7 @@ export interface Venue {
   description: string | null;
   address: string;
   city: string;
+  district: string | null;
   cover_url: string | null;
   photos: string[];
   lng: number | null;

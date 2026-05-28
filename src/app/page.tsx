@@ -1,74 +1,50 @@
-import Link from "next/link";
-import { listVenues, type Vertical } from "@/lib/api";
-
-const VERTICAL_LABELS: Record<Vertical, string> = {
-  salon: "სალონები",
-  restaurant: "რესტორნები",
-  cafe: "კაფეები",
-  bar: "ბარები",
-};
+import { listVenues } from "@/lib/api";
+import { CategorySections } from "./category-sections";
 
 export default async function Home() {
   const { items } = await listVenues({ limit: 30 });
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-16">
-      <header className="mb-12">
-        <p className="text-sm font-semibold uppercase tracking-wider text-brand">
-          Checkin Georgia
-        </p>
-        <h1 className="mt-2 text-5xl font-bold leading-tight">
-          აღმოაჩინე, დაჯავშნე, გადაიხადე
-          <span className="text-brand"> ერთ აპში</span>
+      <header className="mb-10 overflow-hidden rounded-3xl bg-sunset px-8 py-14 text-white shadow-lg">
+        <div className="flex items-center gap-2">
+          <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
+              fill="#FFFFFF"
+            />
+            <path
+              d="M8.6 9.2l2.2 2.2 4.4-4.6"
+              stroke="#6D28E8"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
+          <span className="text-lg font-bold tracking-tight">checkin</span>
+        </div>
+        <h1 className="mt-6 text-5xl font-extrabold leading-tight">
+          აღმოაჩინე, დაჯავშნე, გადაიხადე — ერთ აპში
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-slate-600">
+        <p className="mt-4 max-w-2xl text-lg text-white/80">
           სალონები · რესტორნები · კაფეები · ბარები — საქართველოს მასშტაბით.
         </p>
       </header>
 
-      <section>
-        <h2 className="mb-6 text-2xl font-semibold">ვენიუები ({items.length})</h2>
-        {items.length === 0 ? (
-          <p className="text-slate-500">ჯერ არ გვაქვს ვენიუები.</p>
-        ) : (
-          <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((v) => (
-              <li
-                key={v.id}
-                className="rounded-2xl border border-slate-200 p-5 transition hover:border-brand hover:shadow-sm"
-              >
-                <Link href={`/venues/${v.slug}`} className="block">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-brand">
-                    {VERTICAL_LABELS[v.vertical]}
-                  </p>
-                  <h3 className="mt-1 text-lg font-semibold">{v.name}</h3>
-                  <p className="mt-1 text-sm text-slate-600">{v.address}</p>
-                  {v.description && (
-                    <p className="mt-3 line-clamp-2 text-sm text-slate-500">
-                      {v.description}
-                    </p>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <CategorySections venues={items} />
 
-      <footer className="mt-16 border-t border-slate-200 pt-6 text-sm text-slate-500">
+      <footer className="mt-16 border-t border-ink-200 pt-6 text-sm text-ink-500">
         <p>
           Powered by{" "}
-          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">
+          <code className="rounded bg-ink-100 px-1.5 py-0.5 text-xs">
             checkin-georgia-api
           </code>{" "}
           on Cloud Run · {items.length} venue{items.length === 1 ? "" : "s"}{" "}
           loaded.
         </p>
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-xs text-ink-400">
           API: {process.env.NEXT_PUBLIC_API_URL ?? "default"}
-        </p>
-        <p className="mt-3 text-xs text-slate-400">
-          🟢 Auto-deployed via GitHub Actions
         </p>
       </footer>
     </main>

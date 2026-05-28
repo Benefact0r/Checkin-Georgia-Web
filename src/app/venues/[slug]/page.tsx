@@ -80,7 +80,7 @@ export default async function VenuePage({ params }: PageProps) {
                   </p>
                   <Link
                     href={`/venues/${venue.slug}/book?service=${s.id}`}
-                    className="mt-2 inline-block rounded-lg bg-brand px-4 py-1.5 text-xs font-medium text-white transition hover:bg-brand-dark"
+                    className="mt-2 inline-block rounded-lg bg-accent px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-accent-600"
                   >
                     დაჯავშნა
                   </Link>

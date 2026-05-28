@@ -212,7 +212,7 @@ export function BookingForm({ venue, service }: Props) {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full rounded-lg bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-50"
+        className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:opacity-50"
       >
         {isPending ? "იქმნება..." : "დაჯავშნა"}
       </button>

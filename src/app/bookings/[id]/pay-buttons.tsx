@@ -54,7 +54,7 @@ export function PayButtons({ bookingId }: { bookingId: string }) {
             type="button"
             disabled={pending}
             onClick={() => pay(p.id)}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-brand hover:bg-brand hover:text-white disabled:opacity-50"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-accent hover:bg-accent hover:text-white disabled:opacity-50"
           >
             {pending && active === p.id ? "..." : p.label}
           </button>

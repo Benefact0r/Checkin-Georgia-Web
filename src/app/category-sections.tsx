@@ -59,7 +59,7 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
           <a
             key={c.key}
             href={`#${c.key}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 transition hover:border-brand hover:text-brand"
+            className="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 transition hover:border-brand hover:text-brand dark:border-ink-700 dark:bg-ink-800 dark:text-ink-300"
           >
             <span aria-hidden>{c.icon}</span>
             {c.label}
@@ -98,7 +98,7 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
                       setSelected((s) => ({ ...s, [c.key]: e.target.value }))
                     }
                     aria-label={`${c.label} — ლოკაცია`}
-                    className="rounded-full border border-ink-200 bg-white px-4 py-1.5 text-sm text-ink-700 transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                    className="rounded-full border border-ink-200 bg-white px-4 py-1.5 text-sm text-ink-700 transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand dark:border-ink-700 dark:bg-ink-800 dark:text-ink-200"
                   >
                     <option value="">ყველა ლოკაცია</option>
                     {districts.map((d) => (
@@ -111,14 +111,14 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
               </div>
 
               {all.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-10 text-center">
+                <div className="rounded-2xl border border-dashed border-ink-200 bg-white/50 dark:border-ink-700 dark:bg-ink-800/40 px-6 py-10 text-center">
                   <p className="text-sm font-medium text-ink-500">მალე</p>
                   <p className="mt-1 text-xs text-ink-400">
                     ამ კატეგორიაში ვენიუები მალე დაემატება
                   </p>
                 </div>
               ) : shown.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-ink-200 bg-white/50 px-6 py-8 text-center">
+                <div className="rounded-2xl border border-dashed border-ink-200 bg-white/50 dark:border-ink-700 dark:bg-ink-800/40 px-6 py-8 text-center">
                   <p className="text-sm text-ink-500">
                     ამ ლოკაციაზე ვენიუ ვერ მოიძებნა
                   </p>
@@ -128,19 +128,19 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
                   {shown.map(({ venue: v, district }) => (
                     <li
                       key={v.id}
-                      className="rounded-2xl border border-ink-200 bg-white p-5 transition hover:border-brand hover:shadow-sm"
+                      className="rounded-2xl border border-ink-200 bg-white p-5 transition hover:border-brand hover:shadow-sm dark:border-ink-700 dark:bg-ink-800"
                     >
                       <Link href={`/venues/${v.slug}`} className="block">
                         <p className="text-xs font-semibold uppercase tracking-wider text-brand">
                           {c.label}
                         </p>
-                        <h3 className="mt-1 text-lg font-semibold">{v.name}</h3>
-                        <p className="mt-1 text-sm text-ink-600">
+                        <h3 className="mt-1 text-lg font-semibold dark:text-ink-50">{v.name}</h3>
+                        <p className="mt-1 text-sm text-ink-600 dark:text-ink-300">
                           {district ? `${districtLabel(district)} · ` : ""}
                           {v.address}
                         </p>
                         {v.description && (
-                          <p className="mt-3 line-clamp-2 text-sm text-ink-500">
+                          <p className="mt-3 line-clamp-2 text-sm text-ink-500 dark:text-ink-400">
                             {v.description}
                           </p>
                         )}

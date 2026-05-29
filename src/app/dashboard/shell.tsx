@@ -16,6 +16,7 @@ const NAV: {
   { href: "/dashboard", label: "მიმოხილვა", icon: "📊", exact: true },
   { href: "/dashboard/venues", label: "ადგილები", icon: "🏠" },
   { href: "/dashboard/bookings", label: "ჯავშნები", icon: "📅" },
+  { href: "/dashboard/messages", label: "შეტყობინებები", icon: "💬" },
   { href: "/dashboard/customers", label: "კლიენტები", icon: "👥" },
   {
     href: "/dashboard/users",
@@ -60,8 +61,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
     n.exact ? pathname === n.href : pathname.startsWith(n.href);
 
   return (
-    <div className="flex min-h-screen bg-ink-50">
-      <aside className="flex w-60 shrink-0 flex-col border-r border-ink-200 bg-white">
+    <div className="flex min-h-screen bg-ink-50 dark:bg-ink-900">
+      <aside className="flex w-60 shrink-0 flex-col border-r border-ink-200 bg-white dark:border-ink-700 dark:bg-ink-800">
         <div className="flex items-center gap-2 px-5 py-5">
           <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden>
             <path
@@ -77,7 +78,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               fill="none"
             />
           </svg>
-          <span className="font-bold tracking-tight text-ink-900">
+          <span className="font-bold tracking-tight text-ink-900 dark:text-ink-50">
             checkin <span className="text-ink-400">admin</span>
           </span>
         </div>
@@ -89,8 +90,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
               href={n.href}
               className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
                 isActive(n)
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-ink-600 hover:bg-ink-50"
+                  ? "bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200"
+                  : "text-ink-600 hover:bg-ink-50 dark:text-ink-300 dark:hover:bg-ink-900"
               }`}
             >
               <span aria-hidden>{n.icon}</span>
@@ -99,8 +100,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        <div className="border-t border-ink-200 p-4">
-          <p className="truncate text-xs font-medium text-ink-700">
+        <div className="border-t border-ink-200 p-4 dark:border-ink-700">
+          <p className="truncate text-xs font-medium text-ink-700 dark:text-ink-200">
             {profile?.email ?? user.email}
           </p>
           <p className="text-xs text-ink-400">

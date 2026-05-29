@@ -236,3 +236,29 @@ export const updateService = (
 
 export const deleteService = (t: string, id: string) =>
   authed<{ id: string }>(`/admin/services/${id}`, t, { method: "DELETE" });
+
+// --- Messages (customer → venue inbox) --------------------------------------
+export interface AdminMessage {
+  id: string;
+  venue_id: string;
+  venue_name: string;
+  sender_name: string | null;
+  sender_phone: string | null;
+  sender_email: string | null;
+  body: string;
+  read_at: string | null;
+  created_at: string;
+  replies: number;
+}
+
+export const getMessages = (t: string) =>
+  authed<{ items: AdminMessage[] }>("/admin/messages", t);
+
+export const replyMessage = (t: string, id: string, body: string) =>
+  authed<{ ok: true }>(`/admin/messages/${id}/reply`, t, {
+    method: "POST",
+    body: JSON.stringify({ body }),
+  });
+
+export const markMessageRead = (t: string, id: string) =>
+  authed<{ ok: true }>(`/admin/messages/${id}/read`, t, { method: "PATCH" });

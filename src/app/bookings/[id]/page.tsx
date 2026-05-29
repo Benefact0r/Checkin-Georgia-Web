@@ -51,9 +51,10 @@ export default async function BookingPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-xl px-6 py-12">
-      <Link href="/" className="text-sm text-brand hover:underline">
-        ← მთავარი
-      </Link>
+      <div className="flex gap-4 text-sm">
+        <Link href="/" className="text-brand hover:underline">← მთავარი</Link>
+        <Link href="/bookings" className="text-brand hover:underline">ჩემი ჯავშნები</Link>
+      </div>
 
       <div
         className={`mt-6 rounded-2xl border px-5 py-3 text-sm font-semibold ${
@@ -69,6 +70,12 @@ export default async function BookingPage({ params }: PageProps) {
         </p>
         <h1 className="text-3xl font-bold">{booking.venue_name}</h1>
         <p className="text-slate-600">{booking.venue_address}</p>
+        <Link
+          href={`/venues/${booking.venue_slug}/book?service=${booking.service_id}`}
+          className="inline-block pt-1 text-sm text-brand hover:underline"
+        >
+          ისევ დაჯავშნა →
+        </Link>
       </section>
 
       <dl className="mt-6 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">

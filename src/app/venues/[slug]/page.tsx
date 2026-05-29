@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getVenue, formatPrice, type Vertical } from "@/lib/api";
 import { VERTICAL_CONFIG } from "@/lib/verticals";
+import { ContactForm } from "./contact-form";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -84,7 +85,7 @@ export default async function VenuePage({ params }: PageProps) {
         <p className="text-xs font-semibold uppercase tracking-wider text-brand">
           {cfg?.icon} {cfg?.label}
         </p>
-        <h1 className="mt-1 text-4xl font-extrabold text-ink-900">{venue.name}</h1>
+        <h1 className="mt-1 text-4xl font-extrabold text-ink-900 dark:text-ink-50">{venue.name}</h1>
         <p className="mt-2 text-ink-600">
           {venue.district ? `${venue.district} · ` : ""}{venue.address}
         </p>
@@ -96,7 +97,7 @@ export default async function VenuePage({ params }: PageProps) {
         {badges(a).length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {badges(a).map((b, i) => (
-              <span key={i} className="rounded-full border border-ink-200 bg-white px-3 py-1 text-sm text-ink-700">{b}</span>
+              <span key={i} className="rounded-full border border-ink-200 bg-white dark:border-ink-700 dark:bg-ink-800 px-3 py-1 text-sm text-ink-700">{b}</span>
             ))}
           </div>
         )}
@@ -124,12 +125,12 @@ export default async function VenuePage({ params }: PageProps) {
       {/* Staff / therapists (salon, spa) */}
       {cfg?.staffLike && staff.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-bold text-ink-900">{cfg.resourceLabelPlural}</h2>
+          <h2 className="mb-4 text-xl font-bold text-ink-900 dark:text-ink-50">{cfg.resourceLabelPlural}</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {staff.map((r) => {
               const ra = (r.attributes ?? {}) as { role?: string; serves?: string };
               return (
-                <div key={r.id} className="rounded-2xl border border-ink-200 bg-white p-4 text-center">
+                <div key={r.id} className="rounded-2xl border border-ink-200 bg-white dark:border-ink-700 dark:bg-ink-800 p-4 text-center">
                   {r.photo_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={r.photo_url} alt={r.name} className="mx-auto h-20 w-20 rounded-full object-cover" />
@@ -138,7 +139,7 @@ export default async function VenuePage({ params }: PageProps) {
                       {r.name.charAt(0)}
                     </div>
                   )}
-                  <p className="mt-2 font-semibold text-ink-900">{r.name}</p>
+                  <p className="mt-2 font-semibold text-ink-900 dark:text-ink-50">{r.name}</p>
                   {ra.role && <p className="text-xs text-ink-500">{ra.role}</p>}
                   {ra.serves && (
                     <span className="mt-1 inline-block rounded-full bg-ink-100 px-2 py-0.5 text-xs text-ink-600">
@@ -156,7 +157,7 @@ export default async function VenuePage({ params }: PageProps) {
       {/* Tables summary (restaurant, bar, club, cafe) */}
       {cfg?.tableLike && tables.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-2 text-xl font-bold text-ink-900">{cfg.resourceLabelPlural}</h2>
+          <h2 className="mb-2 text-xl font-bold text-ink-900 dark:text-ink-50">{cfg.resourceLabelPlural}</h2>
           <p className="text-sm text-ink-600">
             {tables.length} {cfg.resourceLabel} · {tables.reduce((n, t) => n + t.capacity, 0)} ადგილი
           </p>
@@ -166,15 +167,15 @@ export default async function VenuePage({ params }: PageProps) {
       {/* Bookable services */}
       {venue.services.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-bold text-ink-900">სერვისები</h2>
+          <h2 className="mb-4 text-xl font-bold text-ink-900 dark:text-ink-50">სერვისები</h2>
           {Object.entries(servicesByCat).map(([cat, items]) => (
             <div key={cat} className="mb-5">
               {cat && <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-ink-400">{cat}</h3>}
               <ul className="space-y-2">
                 {items.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between rounded-xl border border-ink-200 bg-white p-4">
+                  <li key={s.id} className="flex items-center justify-between rounded-xl border border-ink-200 bg-white dark:border-ink-700 dark:bg-ink-800 p-4">
                     <div>
-                      <p className="font-semibold text-ink-900">{s.name}</p>
+                      <p className="font-semibold text-ink-900 dark:text-ink-50">{s.name}</p>
                       <p className="text-xs text-ink-500">
                         {s.duration_minutes ? `${s.duration_minutes} წთ` : ""}
                       </p>
@@ -201,15 +202,15 @@ export default async function VenuePage({ params }: PageProps) {
       {/* Food / drink menu (informational) */}
       {a.menu?.length ? (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-bold text-ink-900">მენიუ</h2>
+          <h2 className="mb-4 text-xl font-bold text-ink-900 dark:text-ink-50">მენიუ</h2>
           {a.menu.map((sec, i) => (
             <div key={i} className="mb-5">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-ink-400">{sec.section}</h3>
-              <ul className="divide-y divide-ink-100 rounded-xl border border-ink-200 bg-white">
+              <ul className="divide-y divide-ink-100 rounded-xl border border-ink-200 bg-white dark:border-ink-700 dark:bg-ink-800">
                 {sec.items.map((it, j) => (
                   <li key={j} className="flex items-start justify-between gap-4 p-3">
                     <div>
-                      <p className="text-sm font-medium text-ink-900">{it.name}</p>
+                      <p className="text-sm font-medium text-ink-900 dark:text-ink-50">{it.name}</p>
                       {it.description && <p className="text-xs text-ink-500">{it.description}</p>}
                     </div>
                     {it.price && <span className="whitespace-nowrap text-sm text-ink-700">{it.price}</span>}
@@ -220,6 +221,12 @@ export default async function VenuePage({ params }: PageProps) {
           ))}
         </section>
       ) : null}
+
+      {/* Contact the venue */}
+      <section className="mt-10">
+        <h2 className="mb-4 text-xl font-bold text-ink-900 dark:text-ink-50">დაგვიკავშირდი</h2>
+        <ContactForm slug={venue.slug} />
+      </section>
     </main>
   );
 }

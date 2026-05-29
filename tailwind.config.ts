@@ -4,6 +4,7 @@ import type { Config } from "tailwindcss";
 // Direction: bold · premium · modern · eager · high colour.
 // Signature: Checkin Violet → Eager Coral gradient.
 const config: Config = {
+  darkMode: "class",
   content: ["./src/**/*.{ts,tsx,mdx}"],
   theme: {
     extend: {

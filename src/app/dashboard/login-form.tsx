@@ -40,8 +40,8 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink-50 px-6">
-      <div className="w-full max-w-sm rounded-3xl border border-ink-200 bg-white p-8 shadow-sm">
+    <div className="flex min-h-screen items-center justify-center bg-ink-50 px-6 dark:bg-ink-900">
+      <div className="w-full max-w-sm rounded-3xl border border-ink-200 bg-white p-8 shadow-sm dark:border-ink-700 dark:bg-ink-800">
         <div className="mb-6 flex items-center gap-2">
           <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden>
             <path
@@ -62,7 +62,7 @@ export function LoginForm() {
           </span>
         </div>
 
-        <h1 className="text-xl font-bold text-ink-900">
+        <h1 className="text-xl font-bold text-ink-900 dark:text-ink-50">
           {mode === "signin" ? "შესვლა" : "რეგისტრაცია"}
         </h1>
         <p className="mt-1 text-sm text-ink-500">
@@ -79,7 +79,7 @@ export function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-1 block w-full rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+              className="mt-1 block w-full rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand dark:border-ink-700 dark:bg-ink-900 dark:text-ink-100"
             />
           </div>
           <div>
@@ -91,7 +91,7 @@ export function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 block w-full rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+              className="mt-1 block w-full rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand dark:border-ink-700 dark:bg-ink-900 dark:text-ink-100"
             />
           </div>
 

@@ -24,16 +24,16 @@ import { useAuth } from "../../auth-provider";
 import { Uploader } from "../../uploader";
 
 const input =
-  "mt-1 block w-full rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
+  "mt-1 block w-full rounded-lg border border-ink-200 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand dark:border-ink-700 dark:bg-ink-900 dark:text-ink-100";
 const btnPrimary =
   "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:opacity-50";
 const btnGhost =
-  "rounded-lg border border-ink-200 px-3 py-1.5 text-sm text-ink-600 hover:border-brand hover:text-brand";
+  "rounded-lg border border-ink-200 px-3 py-1.5 text-sm text-ink-600 hover:border-brand hover:text-brand dark:border-ink-700 dark:text-ink-300";
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-ink-200 bg-white p-6">
-      <h2 className="mb-4 text-lg font-bold text-ink-900">{title}</h2>
+    <section className="rounded-2xl border border-ink-200 bg-white p-6 dark:border-ink-700 dark:bg-ink-800">
+      <h2 className="mb-4 text-lg font-bold text-ink-900 dark:text-ink-50">{title}</h2>
       {children}
     </section>
   );

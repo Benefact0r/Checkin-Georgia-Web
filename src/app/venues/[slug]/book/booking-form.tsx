@@ -99,6 +99,17 @@ export function BookingForm({ venue, service }: Props) {
           throw new Error(body.error ?? `HTTP ${res.status}`);
         }
         const booking = (await res.json()) as { id: string };
+        // Remember this booking on-device so guests get a history (no login).
+        try {
+          const KEY = "checkin-bookings";
+          const prev: string[] = JSON.parse(localStorage.getItem(KEY) || "[]");
+          localStorage.setItem(
+            KEY,
+            JSON.stringify([booking.id, ...prev.filter((x) => x !== booking.id)].slice(0, 50)),
+          );
+        } catch {
+          /* ignore */
+        }
         router.push(`/bookings/${booking.id}`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "უცნობი შეცდომა");

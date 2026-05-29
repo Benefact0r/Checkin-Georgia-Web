@@ -147,4 +147,20 @@ export async function getBooking(id: string): Promise<BookingDetail> {
   return res.json();
 }
 
+export async function contactVenue(
+  slug: string,
+  body: { name?: string; phone?: string; email?: string; body: string },
+): Promise<{ ok: true }> {
+  const res = await fetch(`${API_URL}/venues/${slug}/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const b = await res.json().catch(() => ({}));
+    throw new Error(b.error ?? `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
 export const apiUrl = API_URL;

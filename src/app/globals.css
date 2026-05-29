@@ -14,7 +14,20 @@ body {
 
 /* Dark mode (class strategy). Page chrome flips here; components opt in with
    dark: variants. */
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
 html.dark body {
   background-color: #14111c;
+  color: #efedf5;
+}
+
+/* Native <select> dropdown popups don't inherit Tailwind colors — style the
+   option list directly so it's readable in dark mode. */
+html.dark option {
+  background-color: #221e2e;
   color: #efedf5;
 }

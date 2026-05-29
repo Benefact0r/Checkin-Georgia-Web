@@ -11,7 +11,7 @@ const STATUS_STYLES: Record<string, string> = {
   pending: "bg-amber-50 text-amber-800 border-amber-200",
   confirmed: "bg-emerald-50 text-emerald-800 border-emerald-200",
   cancelled: "bg-red-50 text-red-700 border-red-200",
-  completed: "bg-slate-50 text-slate-700 border-slate-200",
+  completed: "bg-ink-100 text-ink-700 border-ink-200 dark:bg-ink-800 dark:text-ink-200 dark:border-ink-700",
   no_show: "bg-red-50 text-red-700 border-red-200",
 };
 
@@ -69,7 +69,7 @@ export default async function BookingPage({ params }: PageProps) {
           {booking.vertical}
         </p>
         <h1 className="text-3xl font-bold">{booking.venue_name}</h1>
-        <p className="text-slate-600">{booking.venue_address}</p>
+        <p className="text-ink-600 dark:text-ink-300">{booking.venue_address}</p>
         <Link
           href={`/venues/${booking.venue_slug}/book?service=${booking.service_id}`}
           className="inline-block pt-1 text-sm text-brand hover:underline"
@@ -106,20 +106,20 @@ export default async function BookingPage({ params }: PageProps) {
         />
       </dl>
 
-      <section className="mt-8 rounded-2xl border border-slate-200 p-5">
+      <section className="mt-8 rounded-2xl border border-ink-200 p-5 dark:border-ink-700">
         {succeededPayment ? (
           <>
             <p className="text-sm font-semibold text-emerald-700">
               ✓ გადახდილია · {succeededPayment.provider}
               {succeededPayment.is_mock && " (mock)"}
             </p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-ink-500 dark:text-ink-400">
               {new Date(succeededPayment.created_at).toLocaleString("ka-GE")} ·{" "}
               {formatPrice(succeededPayment.amount_minor, booking.currency)}
             </p>
           </>
         ) : booking.status === "cancelled" ? (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-ink-500 dark:text-ink-400">
             ჯავშანი გაუქმდა — გადახდა მიუღებელია.
           </p>
         ) : (
@@ -127,8 +127,8 @@ export default async function BookingPage({ params }: PageProps) {
         )}
       </section>
 
-      <p className="mt-6 text-center text-xs text-slate-400">
-        ID: <code className="rounded bg-slate-100 px-1.5 py-0.5">{booking.id}</code>
+      <p className="mt-6 text-center text-xs text-ink-400">
+        ID: <code className="rounded bg-ink-100 px-1.5 py-0.5 dark:bg-ink-800">{booking.id}</code>
       </p>
     </main>
   );
@@ -137,7 +137,7 @@ export default async function BookingPage({ params }: PageProps) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wider text-slate-500">
+      <dt className="text-xs uppercase tracking-wider text-ink-500 dark:text-ink-400">
         {label}
       </dt>
       <dd className="mt-0.5">{value}</dd>

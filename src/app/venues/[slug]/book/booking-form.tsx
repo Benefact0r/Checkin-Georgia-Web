@@ -121,13 +121,13 @@ export function BookingForm({ venue, service }: Props) {
     <form onSubmit={submit} className="mt-8 space-y-6">
       {/* Slot picker */}
       <div>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-ink-700 dark:text-ink-200">
           აარჩიე დრო
         </label>
         <select
           value={slotIso}
           onChange={(e) => setSlotIso(e.target.value)}
-          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="mt-1 block w-full rounded-lg border border-ink-200 dark:border-ink-700 bg-white px-3 py-2 text-sm dark:bg-ink-900 dark:text-ink-100 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           required
         >
           {slots.map((s) => (
@@ -140,13 +140,13 @@ export function BookingForm({ venue, service }: Props) {
 
       {/* Resource picker */}
       <div>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-ink-700 dark:text-ink-200">
           {venue.vertical === "salon" ? "თანამშრომელი" : "რესურსი"}
         </label>
         <select
           value={resourceId}
           onChange={(e) => setResourceId(e.target.value)}
-          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="mt-1 block w-full rounded-lg border border-ink-200 dark:border-ink-700 bg-white px-3 py-2 text-sm dark:bg-ink-900 dark:text-ink-100 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
           required
         >
           {venue.resources.map((r) => (
@@ -161,7 +161,7 @@ export function BookingForm({ venue, service }: Props) {
       {/* Party size */}
       {(venue.vertical === "restaurant" || venue.vertical === "bar") && (
         <div>
-          <label className="block text-sm font-medium text-slate-700">
+          <label className="block text-sm font-medium text-ink-700 dark:text-ink-200">
             სტუმრის რაოდენობა
           </label>
           <input
@@ -170,48 +170,48 @@ export function BookingForm({ venue, service }: Props) {
             max={20}
             value={partySize}
             onChange={(e) => setPartySize(parseInt(e.target.value) || 1)}
-            className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="mt-1 block w-full rounded-lg border border-ink-200 dark:border-ink-700 bg-white px-3 py-2 text-sm dark:bg-ink-900 dark:text-ink-100"
           />
         </div>
       )}
 
       {/* Guest checkout */}
       <fieldset className="grid grid-cols-2 gap-3">
-        <legend className="col-span-2 mb-1 text-sm font-medium text-slate-700">
+        <legend className="col-span-2 mb-1 text-sm font-medium text-ink-700 dark:text-ink-200">
           საკონტაქტო ინფო (guest checkout)
         </legend>
         <div>
-          <label className="block text-xs text-slate-600">სახელი</label>
+          <label className="block text-xs text-ink-600 dark:text-ink-300">სახელი</label>
           <input
             type="text"
             value={guestName}
             onChange={(e) => setGuestName(e.target.value)}
-            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="mt-1 block w-full rounded-lg border border-ink-200 dark:border-ink-700 px-3 py-2 text-sm"
             required
           />
         </div>
         <div>
-          <label className="block text-xs text-slate-600">ტელეფონი</label>
+          <label className="block text-xs text-ink-600 dark:text-ink-300">ტელეფონი</label>
           <input
             type="tel"
             value={guestPhone}
             onChange={(e) => setGuestPhone(e.target.value)}
             placeholder="+995555000000"
-            className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            className="mt-1 block w-full rounded-lg border border-ink-200 dark:border-ink-700 px-3 py-2 text-sm"
             required
           />
         </div>
       </fieldset>
 
       <div>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-ink-700 dark:text-ink-200">
           შენიშვნა (არასავალდებულო)
         </label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
-          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="mt-1 block w-full rounded-lg border border-ink-200 dark:border-ink-700 px-3 py-2 text-sm"
         />
       </div>
 
@@ -229,7 +229,7 @@ export function BookingForm({ venue, service }: Props) {
         {isPending ? "იქმნება..." : "დაჯავშნა"}
       </button>
 
-      <p className="text-center text-xs text-slate-500">
+      <p className="text-center text-xs text-ink-500 dark:text-ink-400">
         ჯავშნა იქმნება {service.payment_mode === "prepay" ? "წინასწარი" : ""}
         {service.payment_mode === "deposit" ? "დეპოზიტით" : ""}
         {service.payment_mode === "on_site" ? "ადგილზე გადახდით" : ""}.

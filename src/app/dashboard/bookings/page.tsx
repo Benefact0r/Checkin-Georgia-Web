@@ -37,7 +37,7 @@ export default function BookingsPage() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="rounded-full border border-ink-200 bg-white px-4 py-1.5 text-sm text-ink-700 focus:border-brand focus:outline-none"
+          className="rounded-full border border-ink-200 bg-white px-4 py-1.5 text-sm text-ink-700 focus:border-brand focus:outline-none dark:border-ink-700 dark:bg-ink-900 dark:text-ink-200"
         >
           {STATUS_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>

@@ -41,10 +41,10 @@ export function PayButtons({ bookingId }: { bookingId: string }) {
 
   return (
     <>
-      <p className="mb-3 text-sm font-semibold text-slate-700">
+      <p className="mb-3 text-sm font-semibold text-ink-700 dark:text-ink-200">
         გადახდის მეთოდი
       </p>
-      <p className="mb-3 text-xs text-slate-500">
+      <p className="mb-3 text-xs text-ink-500 dark:text-ink-400">
         ⚠ MVP — გადახდები mock-ია. რეალური BOG/TBC API მერე ჩაერთვება.
       </p>
       <div className="grid grid-cols-2 gap-2">
@@ -54,7 +54,7 @@ export function PayButtons({ bookingId }: { bookingId: string }) {
             type="button"
             disabled={pending}
             onClick={() => pay(p.id)}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium transition hover:border-accent hover:bg-accent hover:text-white disabled:opacity-50"
+            className="rounded-lg border border-ink-200 px-4 py-2 text-sm font-medium transition hover:border-accent hover:bg-accent hover:text-white disabled:opacity-50 dark:border-ink-700 dark:text-ink-200"
           >
             {pending && active === p.id ? "..." : p.label}
           </button>

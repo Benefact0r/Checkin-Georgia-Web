@@ -37,7 +37,7 @@ export default async function BookPage({ params, searchParams }: PageProps) {
           ჯავშანი · {venue.name}
         </p>
         <h1 className="mt-1 text-3xl font-bold">{service.name}</h1>
-        <p className="mt-2 text-slate-600">
+        <p className="mt-2 text-ink-600 dark:text-ink-300">
           {service.duration_minutes
             ? `${service.duration_minutes} წუთი`
             : "ხანგრძლივობა მითითებული არ არის"}

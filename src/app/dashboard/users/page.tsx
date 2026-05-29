@@ -81,7 +81,7 @@ export default function UsersPage() {
                       value={u.role}
                       disabled={savingId === u.id}
                       onChange={(e) => changeRole(u.id, e.target.value as Role)}
-                      className="rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-sm focus:border-brand focus:outline-none disabled:opacity-50"
+                      className="rounded-lg border border-ink-200 bg-white px-2.5 py-1.5 text-sm focus:border-brand focus:outline-none disabled:opacity-50 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-100"
                     >
                       {ROLES.map((r) => (
                         <option key={r.value} value={r.value}>

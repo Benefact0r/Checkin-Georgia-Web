@@ -1,21 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   createVenue,
   getAdminVenues,
   type CreateVenueInput,
 } from "@/lib/admin-api";
-import type { Vertical } from "@/lib/api";
+import { VERTICAL_LIST } from "@/lib/verticals";
 import { useAuth } from "../auth-provider";
 import { useAuthedData } from "../use-authed-data";
 
-const VERTICALS: { value: Vertical; label: string }[] = [
-  { value: "salon", label: "სალონი" },
-  { value: "restaurant", label: "რესტორანი" },
-  { value: "cafe", label: "კაფე" },
-  { value: "bar", label: "ბარი" },
-];
+const VERTICALS = VERTICAL_LIST.map((c) => ({ value: c.key, label: c.label }));
 
 const STATUS_STYLE: Record<string, string> = {
   active: "bg-success/10 text-success",
@@ -26,9 +23,9 @@ const STATUS_STYLE: Record<string, string> = {
 
 export default function VenuesPage() {
   const { profile, token } = useAuth();
+  const router = useRouter();
   const isAdmin = profile?.role === "admin";
-  const [refresh, setRefresh] = useState(0);
-  const { data, error, loading } = useAuthedData(getAdminVenues, [refresh]);
+  const { data, error, loading } = useAuthedData(getAdminVenues);
 
   const [open, setOpen] = useState(false);
 
@@ -54,10 +51,7 @@ export default function VenuesPage() {
       {open && isAdmin && (
         <AddVenueForm
           createFn={(body) => token().then((t) => createVenue(t, body))}
-          onCreated={() => {
-            setOpen(false);
-            setRefresh((n) => n + 1);
-          }}
+          onCreated={(id) => router.push(`/dashboard/venues/${id}`)}
         />
       )}
 
@@ -82,9 +76,14 @@ export default function VenuesPage() {
             </thead>
             <tbody className="divide-y divide-ink-100">
               {data.items.map((v) => (
-                <tr key={v.id}>
-                  <td className="px-4 py-3 font-medium text-ink-900">
-                    {v.name}
+                <tr key={v.id} className="hover:bg-ink-50">
+                  <td className="px-4 py-3 font-medium">
+                    <Link
+                      href={`/dashboard/venues/${v.id}`}
+                      className="text-brand hover:underline"
+                    >
+                      {v.name}
+                    </Link>
                   </td>
                   <td className="px-4 py-3 text-ink-600">{v.vertical}</td>
                   <td className="px-4 py-3 text-ink-600">
@@ -116,8 +115,8 @@ function AddVenueForm({
   createFn,
   onCreated,
 }: {
-  createFn: (body: CreateVenueInput) => Promise<unknown>;
-  onCreated: () => void;
+  createFn: (body: CreateVenueInput) => Promise<{ id: string }>;
+  onCreated: (id: string) => void;
 }) {
   const [form, setForm] = useState<CreateVenueInput>({
     slug: "",
@@ -139,12 +138,12 @@ function AddVenueForm({
     setBusy(true);
     setError(null);
     try {
-      await createFn({
+      const created = await createFn({
         ...form,
         district: form.district?.trim() || undefined,
         description: form.description?.trim() || undefined,
       });
-      onCreated();
+      onCreated(created.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "ვერ შეიქმნა");
       setBusy(false);

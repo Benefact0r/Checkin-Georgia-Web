@@ -2,7 +2,13 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
   "https://checkin-georgia-api-171625154738.europe-west1.run.app";
 
-export type Vertical = "salon" | "restaurant" | "cafe" | "bar";
+export type Vertical =
+  | "salon"
+  | "restaurant"
+  | "cafe"
+  | "bar"
+  | "night_club"
+  | "spa";
 
 export interface Venue {
   id: string;
@@ -15,6 +21,8 @@ export interface Venue {
   district: string | null;
   cover_url: string | null;
   photos: string[];
+  videos: string[];
+  attributes: Record<string, unknown>;
   lng: number | null;
   lat: number | null;
 }
@@ -27,11 +35,12 @@ export interface VenueDetail extends Venue {
   resources: Array<{
     id: string;
     name: string;
-    kind: "staff" | "table" | "seat" | "queue";
+    kind: "staff" | "table" | "seat" | "queue" | "room";
     capacity: number;
     photo_url: string | null;
     bio: string | null;
     position: number;
+    attributes: Record<string, unknown>;
   }>;
   services: Array<{
     id: string;

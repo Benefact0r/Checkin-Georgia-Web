@@ -21,6 +21,7 @@ const KIND_LABEL: Record<Resource["kind"], string> = {
   table: "მაგიდა",
   seat: "ადგილი",
   queue: "რიგი",
+  room: "ოთახი",
 };
 
 /** Generate hourly time slots 09:00–20:00 over the next 7 days. */

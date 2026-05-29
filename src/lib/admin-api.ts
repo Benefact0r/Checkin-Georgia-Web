@@ -130,3 +130,109 @@ export const setUserRole = (t: string, id: string, role: Role) =>
     method: "PATCH",
     body: JSON.stringify({ role }),
   });
+
+// ---------------------------------------------------------------------------
+// Venue detail + update, resources (workers/tables), services (menu).
+// ---------------------------------------------------------------------------
+export interface AdminVenueDetail extends AdminVenue {
+  description: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  cover_url: string | null;
+  photos: string[];
+  videos: string[];
+  attributes: Record<string, unknown>;
+}
+
+export interface AdminResource {
+  id: string;
+  name: string;
+  kind: "staff" | "table" | "seat" | "queue" | "room";
+  capacity: number;
+  photo_url: string | null;
+  bio: string | null;
+  position: number;
+  active: boolean;
+  attributes: Record<string, unknown>;
+  service_ids: string[];
+}
+
+export interface AdminService {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  duration_minutes: number | null;
+  price_minor: number | null;
+  currency: string;
+  payment_mode: "on_site" | "deposit" | "prepay";
+  deposit_minor: number | null;
+  position: number;
+  active: boolean;
+}
+
+export const getAdminVenue = (t: string, id: string) =>
+  authed<AdminVenueDetail>(`/admin/venues/${id}`, t);
+
+export const updateVenue = (
+  t: string,
+  id: string,
+  patch: Record<string, unknown>,
+) =>
+  authed<AdminVenueDetail>(`/admin/venues/${id}`, t, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+
+export const getResources = (t: string, venueId: string) =>
+  authed<{ items: AdminResource[] }>(`/admin/venues/${venueId}/resources`, t);
+
+export const createResource = (
+  t: string,
+  venueId: string,
+  body: Record<string, unknown>,
+) =>
+  authed<{ id: string }>(`/admin/venues/${venueId}/resources`, t, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+export const updateResource = (
+  t: string,
+  id: string,
+  body: Record<string, unknown>,
+) =>
+  authed<{ id: string }>(`/admin/resources/${id}`, t, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+
+export const deleteResource = (t: string, id: string) =>
+  authed<{ id: string }>(`/admin/resources/${id}`, t, { method: "DELETE" });
+
+export const getServices = (t: string, venueId: string) =>
+  authed<{ items: AdminService[] }>(`/admin/venues/${venueId}/services`, t);
+
+export const createService = (
+  t: string,
+  venueId: string,
+  body: Record<string, unknown>,
+) =>
+  authed<{ id: string }>(`/admin/venues/${venueId}/services`, t, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+export const updateService = (
+  t: string,
+  id: string,
+  body: Record<string, unknown>,
+) =>
+  authed<{ id: string }>(`/admin/services/${id}`, t, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+
+export const deleteService = (t: string, id: string) =>
+  authed<{ id: string }>(`/admin/services/${id}`, t, { method: "DELETE" });

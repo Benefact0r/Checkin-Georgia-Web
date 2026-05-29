@@ -17,10 +17,25 @@ const sans = Noto_Sans_Georgian({
 });
 
 export const metadata: Metadata = {
-  title: "Checkin Georgia",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      "https://checkin-georgia-web-171625154738.europe-west1.run.app",
+  ),
+  title: {
+    default: "Checkin Georgia — დაჯავშნე ერთ აპში",
+    template: "%s · Checkin Georgia",
+  },
   description:
-    "Discover, book, and pay at salons, restaurants, cafes, and bars across Georgia.",
+    "აღმოაჩინე და დაჯავშნე სალონები, რესტორნები, კაფეები, ბარები, ღამის კლუბები და სპა საქართველოში.",
   icons: { icon: "/icon.svg" },
+  openGraph: {
+    type: "website",
+    locale: "ka_GE",
+    siteName: "Checkin Georgia",
+    title: "Checkin Georgia",
+    description:
+      "დაჯავშნე სალონები, რესტორნები, კაფეები, ბარები, ღამის კლუბები და სპა — ერთ აპში.",
+  },
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getVenue, formatPrice, type Vertical } from "@/lib/api";
+import { getVenue, getVenueReviews, formatPrice, type Vertical } from "@/lib/api";
 import { VERTICAL_CONFIG } from "@/lib/verticals";
 import { ContactForm } from "./contact-form";
 
@@ -63,6 +63,7 @@ export default async function VenuePage({ params }: PageProps) {
     notFound();
   }
 
+  const reviews = (await getVenueReviews(slug)).items;
   const cfg = VERTICAL_CONFIG[venue.vertical as Vertical];
   const a = (venue.attributes ?? {}) as Attrs;
   const staff = venue.resources.filter((r) => r.kind === "staff" || r.kind === "room");
@@ -221,6 +222,38 @@ export default async function VenuePage({ params }: PageProps) {
           ))}
         </section>
       ) : null}
+
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <section className="mt-10">
+          <h2 className="mb-4 text-xl font-bold text-ink-900 dark:text-ink-50">შეფასებები</h2>
+          <ul className="space-y-3">
+            {reviews.map((r) => (
+              <li
+                key={r.id}
+                className="rounded-2xl border border-ink-200 bg-white p-4 dark:border-ink-700 dark:bg-ink-800"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold text-ink-900 dark:text-ink-100">
+                    {r.reviewer_name ?? "მომხმარებელი"}
+                  </p>
+                  <p className="text-sm text-gold">
+                    {"★".repeat(r.rating)}
+                    <span className="text-ink-300 dark:text-ink-600">{"★".repeat(5 - r.rating)}</span>
+                  </p>
+                </div>
+                {r.text && <p className="mt-1 text-sm text-ink-600 dark:text-ink-300">{r.text}</p>}
+                {r.reply_text && (
+                  <div className="mt-2 rounded-lg bg-ink-50 p-2 text-sm text-ink-600 dark:bg-ink-900 dark:text-ink-300">
+                    <span className="text-xs font-semibold text-brand">პასუხი: </span>
+                    {r.reply_text}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Contact the venue */}
       <section className="mt-10">

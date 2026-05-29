@@ -50,9 +50,26 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
   );
   // Selected district per category (empty string = all).
   const [selected, setSelected] = useState<Record<string, string>>({});
+  const [q, setQ] = useState("");
+  const needle = q.trim().toLowerCase();
+  const matchesQ = (name: string, address: string) =>
+    !needle ||
+    name.toLowerCase().includes(needle) ||
+    address.toLowerCase().includes(needle);
 
   return (
     <>
+      {/* Search */}
+      <div className="mb-6">
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="🔍 ძებნა — სახელი ან მისამართი…"
+          className="w-full rounded-2xl border border-ink-200 bg-white px-5 py-3 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand dark:border-ink-700 dark:bg-ink-800 dark:text-ink-100"
+        />
+      </div>
+
       {/* Category quick-nav — anchor-jumps to each section */}
       <nav className="mb-12 flex flex-wrap gap-2">
         {CATEGORIES.map((c) => (
@@ -69,7 +86,11 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
 
       <div className="space-y-12">
         {CATEGORIES.map((c) => {
-          const all = enriched.filter((e) => e.venue.vertical === c.key);
+          const all = enriched.filter(
+            (e) =>
+              e.venue.vertical === c.key &&
+              matchesQ(e.venue.name, e.venue.address),
+          );
           const districts = Array.from(
             new Set(all.map((e) => e.district).filter((d): d is string => !!d)),
           ).sort();

@@ -81,6 +81,26 @@ export async function getVenue(slug: string): Promise<VenueDetail> {
   return res.json();
 }
 
+export interface Review {
+  id: string;
+  rating: number;
+  text: string | null;
+  photos: string[];
+  created_at: string;
+  reply_text: string | null;
+  reply_at: string | null;
+  reviewer_name: string | null;
+  reviewer_avatar: string | null;
+}
+
+export async function getVenueReviews(slug: string): Promise<{ items: Review[] }> {
+  const res = await fetch(`${API_URL}/venues/${slug}/reviews`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) return { items: [] };
+  return res.json();
+}
+
 export function formatPrice(minor: number | null, currency = "GEL"): string {
   if (minor == null) return "—";
   const major = minor / 100;

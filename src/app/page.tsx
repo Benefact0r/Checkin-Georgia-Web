@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { listVenues } from "@/lib/api";
 import { CategorySections } from "./category-sections";
+import { ForYouFeed } from "@/components/for-you-feed";
+import { RecentlyViewed } from "@/components/recently-viewed";
+import { HeaderNav } from "@/components/header-nav";
 
 export default async function Home() {
-  const { items } = await listVenues({ limit: 30 });
+  const { items } = await listVenues({ limit: 60 });
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-16">
-      <header className="mb-10 overflow-hidden rounded-3xl bg-sunset px-8 py-14 text-white shadow-lg">
-        <div className="flex items-center justify-between">
+    <main className="mx-auto max-w-5xl px-6 py-10 sm:py-16">
+      <header className="mb-10 overflow-hidden rounded-3xl bg-sunset px-6 py-10 text-white shadow-lg sm:px-8 sm:py-14">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
               <path
@@ -26,21 +29,21 @@ export default async function Home() {
             </svg>
             <span className="text-lg font-bold tracking-tight">checkin</span>
           </div>
-          <Link
-            href="/bookings"
-            className="rounded-full bg-white/15 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/25"
-          >
-            ჩემი ჯავშნები
-          </Link>
+          <HeaderNav />
         </div>
-        <h1 className="mt-6 text-5xl font-extrabold leading-tight">
+        <h1 className="mt-8 text-4xl font-extrabold leading-tight sm:text-5xl">
           აღმოაჩინე, დაჯავშნე, გადაიხადე — ერთ აპში
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-white/80">
-          სალონები · რესტორნები · კაფეები · ბარები — საქართველოს მასშტაბით.
+          სალონები · რესტორნები · კაფეები · ბარები · ღამის კლუბები · სპა — საქართველოს მასშტაბით.
         </p>
       </header>
 
+      {/* Personalized discovery */}
+      <ForYouFeed />
+      <RecentlyViewed />
+
+      {/* Full browse by category */}
       <CategorySections venues={items} />
 
       <footer className="mt-16 flex flex-col gap-3 border-t border-ink-200 pt-6 text-sm text-ink-500 dark:border-ink-700 dark:text-ink-400 sm:flex-row sm:items-center sm:justify-between">

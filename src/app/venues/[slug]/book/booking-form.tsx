@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { VenueDetail } from "@/lib/api";
+import { getSessionId } from "@/lib/session";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
@@ -79,7 +80,10 @@ export function BookingForm({ venue, service }: Props) {
       try {
         const res = await fetch(`${API_URL}/bookings`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-Checkin-Session": getSessionId(),
+          },
           body: JSON.stringify({
             venue_id: venue.id,
             resource_id: resourceId,

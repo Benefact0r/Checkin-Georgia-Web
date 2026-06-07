@@ -1,15 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import type { Venue, Vertical } from "@/lib/api";
+import { districtLabel } from "@/lib/districts";
+import { VenueCard } from "@/components/venue-card";
 
-// Landing-page category taxonomy. The first four map to real backend verticals;
-// `night_club` and `spa` are presentation-only until the backend vertical model
-// is extended.
-type CategoryKey = Vertical | "night_club" | "spa";
-
-const CATEGORIES: { key: CategoryKey; label: string; icon: string }[] = [
+// Landing-page category taxonomy — all six map to real backend verticals.
+const CATEGORIES: { key: Vertical; label: string; icon: string }[] = [
   { key: "salon", label: "სალონები", icon: "💇" },
   { key: "restaurant", label: "რესტორნები", icon: "🍽️" },
   { key: "cafe", label: "კაფეები", icon: "☕" },
@@ -18,21 +15,8 @@ const CATEGORIES: { key: CategoryKey; label: string; icon: string }[] = [
   { key: "spa", label: "სპა და სხეული", icon: "💆" },
 ];
 
-// Known Tbilisi districts → Georgian dropdown labels.
-const DISTRICT_LABELS: Record<string, string> = {
-  Vake: "ვაკე",
-  Saburtalo: "საბურთალო",
-  Vera: "ვერა",
-  Mtatsminda: "მთაწმინდა",
-  Sololaki: "სოლოლაკი",
-  "Old Tbilisi": "ძველი თბილისი",
-  Marjanishvili: "მარჯანიშვილი",
-};
-const districtLabel = (key: string) => DISTRICT_LABELS[key] ?? key;
-
 // Use the structured `district` field when present. Fall back to deriving it
-// from the address keyword so filtering works before the API is redeployed
-// with the district column.
+// from the address keyword so filtering still works for un-tagged venues.
 function districtOf(v: Venue): string | null {
   if (v.district) return v.district;
   const a = v.address.toLowerCase();
@@ -45,7 +29,7 @@ function districtOf(v: Venue): string | null {
 
 export function CategorySections({ venues }: { venues: Venue[] }) {
   const enriched = useMemo(
-    () => venues.map((v) => ({ venue: v, district: districtOf(v) })),
+    () => venues.map((v) => ({ venue: { ...v, district: districtOf(v) } })),
     [venues],
   );
   // Selected district per category (empty string = all).
@@ -92,10 +76,10 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
               matchesQ(e.venue.name, e.venue.address),
           );
           const districts = Array.from(
-            new Set(all.map((e) => e.district).filter((d): d is string => !!d)),
+            new Set(all.map((e) => e.venue.district).filter((d): d is string => !!d)),
           ).sort();
           const sel = selected[c.key] ?? "";
-          const shown = sel ? all.filter((e) => e.district === sel) : all;
+          const shown = sel ? all.filter((e) => e.venue.district === sel) : all;
 
           return (
             <section key={c.key} id={c.key} className="scroll-mt-6">
@@ -145,27 +129,10 @@ export function CategorySections({ venues }: { venues: Venue[] }) {
                   </p>
                 </div>
               ) : (
-                <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {shown.map(({ venue: v, district }) => (
-                    <li
-                      key={v.id}
-                      className="rounded-2xl border border-ink-200 bg-white p-5 transition hover:border-brand hover:shadow-sm dark:border-ink-700 dark:bg-ink-800"
-                    >
-                      <Link href={`/venues/${v.slug}`} className="block">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-brand">
-                          {c.label}
-                        </p>
-                        <h3 className="mt-1 text-lg font-semibold dark:text-ink-50">{v.name}</h3>
-                        <p className="mt-1 text-sm text-ink-600 dark:text-ink-300">
-                          {district ? `${districtLabel(district)} · ` : ""}
-                          {v.address}
-                        </p>
-                        {v.description && (
-                          <p className="mt-3 line-clamp-2 text-sm text-ink-500 dark:text-ink-400">
-                            {v.description}
-                          </p>
-                        )}
-                      </Link>
+                <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {shown.map(({ venue: v }) => (
+                    <li key={v.id}>
+                      <VenueCard venue={v} label={c.label} />
                     </li>
                   ))}
                 </ul>

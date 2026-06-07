@@ -2,6 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getVenue, getVenueReviews, formatPrice, type Vertical } from "@/lib/api";
 import { VERTICAL_CONFIG } from "@/lib/verticals";
+import { FavoriteButton } from "@/components/favorite-button";
+import { RecentlyViewed } from "@/components/recently-viewed";
+import { VenueViewLogger } from "@/components/venue-view-logger";
 import { ContactForm } from "./contact-form";
 
 interface PageProps {
@@ -72,15 +75,21 @@ export default async function VenuePage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
+      <VenueViewLogger venueId={venue.id} />
       <Link href="/" className="text-sm text-brand hover:underline">← უკან</Link>
 
       {/* Hero */}
-      {venue.cover_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={venue.cover_url} alt={venue.name} className="mt-4 h-64 w-full rounded-3xl object-cover" />
-      ) : (
-        <div className="mt-4 h-32 w-full rounded-3xl bg-sunset" />
-      )}
+      <div className="relative mt-4">
+        {venue.cover_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={venue.cover_url} alt={venue.name} className="h-64 w-full rounded-3xl object-cover" />
+        ) : (
+          <div className="h-32 w-full rounded-3xl bg-sunset" />
+        )}
+        <div className="absolute right-3 top-3">
+          <FavoriteButton venueId={venue.id} className="h-10 w-10" />
+        </div>
+      </div>
 
       <header className="mt-6">
         <p className="text-xs font-semibold uppercase tracking-wider text-brand">
@@ -260,6 +269,11 @@ export default async function VenuePage({ params }: PageProps) {
         <h2 className="mb-4 text-xl font-bold text-ink-900 dark:text-ink-50">დაგვიკავშირდი</h2>
         <ContactForm slug={venue.slug} />
       </section>
+
+      {/* Recently viewed (excludes this venue) */}
+      <div className="mt-14">
+        <RecentlyViewed excludeId={venue.id} />
+      </div>
     </main>
   );
 }

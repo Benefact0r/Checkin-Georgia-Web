@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getBooking, formatPrice } from "@/lib/api";
+import { formatDateTime } from "@/lib/datetime";
 import { PayButtons } from "./pay-buttons";
 
 interface PageProps {
@@ -40,8 +41,7 @@ export default async function BookingPage({ params }: PageProps) {
     (p) => p.status === "succeeded",
   );
 
-  const startDate = new Date(booking.starts_at);
-  const formattedDate = startDate.toLocaleString("ka-GE", {
+  const formattedDate = formatDateTime(booking.starts_at, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -114,7 +114,7 @@ export default async function BookingPage({ params }: PageProps) {
               {succeededPayment.is_mock && " (mock)"}
             </p>
             <p className="mt-1 text-xs text-ink-500 dark:text-ink-400">
-              {new Date(succeededPayment.created_at).toLocaleString("ka-GE")} ·{" "}
+              {formatDateTime(succeededPayment.created_at)} ·{" "}
               {formatPrice(succeededPayment.amount_minor, booking.currency)}
             </p>
           </>

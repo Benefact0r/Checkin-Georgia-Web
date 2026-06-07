@@ -101,6 +101,35 @@ export async function getVenueReviews(slug: string): Promise<{ items: Review[] }
   return res.json();
 }
 
+export interface AvailSlot {
+  time: string; // local "HH:MM"
+  iso: string; // UTC instant to send as starts_at
+  resource_ids: string[];
+}
+export interface AvailDay {
+  date: string; // local "YYYY-MM-DD"
+  weekday: string; // "mon" | "tue" | ...
+  slots: AvailSlot[];
+}
+export interface Availability {
+  service_id: string;
+  duration_minutes: number;
+  days: AvailDay[];
+}
+
+export async function getAvailability(
+  slug: string,
+  serviceId: string,
+  days = 7,
+): Promise<Availability> {
+  const url = new URL(`${API_URL}/venues/${slug}/availability`);
+  url.searchParams.set("service_id", serviceId);
+  url.searchParams.set("days", String(days));
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`availability_fetch_failed: ${res.status}`);
+  return res.json();
+}
+
 export function formatPrice(minor: number | null, currency = "GEL"): string {
   if (minor == null) return "—";
   const major = minor / 100;

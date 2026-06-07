@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { getAdminBookings, type AdminBooking } from "@/lib/admin-api";
 import { formatPrice } from "@/lib/api";
+import { formatDateTime } from "@/lib/datetime";
 import { useAuthedData } from "../use-authed-data";
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [
@@ -87,7 +88,7 @@ function Row({ b }: { b: AdminBooking }) {
   return (
     <tr>
       <td className="px-4 py-3 text-ink-600">
-        {new Date(b.starts_at).toLocaleString("ka-GE", {
+        {formatDateTime(b.starts_at, {
           day: "numeric",
           month: "short",
           hour: "2-digit",

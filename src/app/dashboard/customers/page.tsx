@@ -1,6 +1,7 @@
 "use client";
 
 import { getCustomers } from "@/lib/admin-api";
+import { formatDate } from "@/lib/datetime";
 import { useAuthedData } from "../use-authed-data";
 
 export default function CustomersPage() {
@@ -46,7 +47,7 @@ export default function CustomersPage() {
                   <td className="px-4 py-3 text-ink-600">{c.bookings}</td>
                   <td className="px-4 py-3 text-ink-600">
                     {c.last_booking
-                      ? new Date(c.last_booking).toLocaleDateString("ka-GE", {
+                      ? formatDate(c.last_booking, {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

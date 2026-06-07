@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBooking, formatPrice, type BookingDetail } from "@/lib/api";
+import { formatDateTime } from "@/lib/datetime";
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "მოლოდინში",
@@ -59,7 +60,7 @@ export default function MyBookings() {
                   <p className="font-semibold text-ink-900 dark:text-ink-50">{b.venue_name}</p>
                   <p className="text-sm text-ink-600 dark:text-ink-300">{b.service_name}</p>
                   <p className="mt-1 text-xs text-ink-400">
-                    {new Date(b.starts_at).toLocaleString("ka-GE", {
+                    {formatDateTime(b.starts_at, {
                       day: "numeric",
                       month: "short",
                       hour: "2-digit",

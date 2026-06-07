@@ -7,6 +7,7 @@ import {
   markMessageRead,
   type AdminMessage,
 } from "@/lib/admin-api";
+import { formatDateTime } from "@/lib/datetime";
 import { useAuth } from "../auth-provider";
 import { useAuthedData } from "../use-authed-data";
 
@@ -77,7 +78,7 @@ function MessageCard({ m, onChanged }: { m: AdminMessage; onChanged: () => void 
             {m.sender_name ?? "სტუმარი"}
             {m.sender_phone ? <span className="font-normal text-ink-400"> · {m.sender_phone}</span> : null}
           </p>
-          <p className="text-xs text-ink-400">{m.venue_name} · {new Date(m.created_at).toLocaleString("ka-GE")}</p>
+          <p className="text-xs text-ink-400">{m.venue_name} · {formatDateTime(m.created_at)}</p>
         </div>
         {!m.read_at && (
           <button onClick={markRead} className="text-xs text-brand hover:underline">წაკითხულად მონიშვნა</button>

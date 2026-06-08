@@ -57,13 +57,14 @@ steps:
       - -c
       - |
         set -uo pipefail
-        URL=$$(gcloud run services describe checkin-georgia-web \
+        # The --tag=candidate revision is reachable at a deterministic tag URL:
+        # https://candidate---<base-service-host>. (describe takes no --filter.)
+        BASE=$$(gcloud run services describe checkin-georgia-web \
           --project=$PROJECT_ID --region=europe-west1 \
-          --flatten="status.traffic" \
-          --filter="status.traffic.tag=candidate" \
-          --format="value(status.traffic.url)" | head -n1)
+          --format="value(status.url)")
+        if [ -z "$$BASE" ]; then echo "ERROR: no base service URL found"; exit 1; fi
+        URL="https://candidate---$${BASE#https://}"
         echo "Candidate revision URL: $$URL"
-        if [ -z "$$URL" ]; then echo "ERROR: no candidate URL found"; exit 1; fi
         for i in $$(seq 1 24); do
           CODE=$$(curl -s -o /tmp/body -w '%{http_code}' "$$URL/" || true)
           echo "attempt $$i: HTTP $$CODE"

@@ -1,7 +1,13 @@
-# Build the web image (NEXT_PUBLIC_* inlined at build time) and deploy to Cloud Run.
-# Used by the Cloud Build GitHub trigger (push to main).
-# Built-in substitutions ($PROJECT_ID, $SHORT_SHA) are used directly in args —
-# they are NOT expanded when nested inside a user-defined substitution.
+# Build the web image (NEXT_PUBLIC_* inlined at build time) and deploy to Cloud
+# Run with a safe (gated) rollout. Used by the Cloud Build GitHub trigger.
+#
+# Safe-deploy pattern: deploy the new revision with --no-traffic + --tag=candidate
+# (0% traffic), smoke-test the candidate URL, and promote to 100% ONLY if it
+# returns 200; otherwise fail the build and leave traffic on the last good revision.
+#
+# Built-in substitutions ($PROJECT_ID, $SHORT_SHA) are used directly in args.
+# In the bash verify step, shell vars are escaped as $$ so Cloud Build does not
+# treat them as substitutions; $PROJECT_ID stays a single $ (built-in).
 # The NEXT_PUBLIC_* values are public client config (shipped in the JS bundle) —
 # safe to commit. Override via trigger substitutions if the project changes.
 substitutions:
@@ -28,7 +34,7 @@ steps:
     args:
       - push
       - europe-west1-docker.pkg.dev/$PROJECT_ID/checkin/web:$SHORT_SHA
-  - id: deploy
+  - id: deploy-no-traffic
     name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
@@ -41,7 +47,36 @@ steps:
       - --update-env-vars=GIT_SHA=$SHORT_SHA
       - --min-instances=0
       - --max-instances=2
+      - --no-traffic
+      - --tag=candidate
       - --quiet
+  - id: verify-and-promote
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -uo pipefail
+        URL=$$(gcloud run services describe checkin-georgia-web \
+          --project=$PROJECT_ID --region=europe-west1 \
+          --flatten="status.traffic" \
+          --filter="status.traffic.tag=candidate" \
+          --format="value(status.traffic.url)" | head -n1)
+        echo "Candidate revision URL: $$URL"
+        if [ -z "$$URL" ]; then echo "ERROR: no candidate URL found"; exit 1; fi
+        for i in $$(seq 1 24); do
+          CODE=$$(curl -s -o /tmp/body -w '%{http_code}' "$$URL/" || true)
+          echo "attempt $$i: HTTP $$CODE"
+          if [ "$$CODE" = "200" ]; then
+            echo "Home OK — promoting candidate to 100% traffic."
+            gcloud run services update-traffic checkin-georgia-web \
+              --project=$PROJECT_ID --region=europe-west1 --to-latest --quiet
+            echo "Promoted."; exit 0
+          fi
+          sleep 5
+        done
+        echo "Health check FAILED after retries — traffic stays on the previous good revision."
+        exit 1
 images:
   - europe-west1-docker.pkg.dev/$PROJECT_ID/checkin/web:$SHORT_SHA
 options:

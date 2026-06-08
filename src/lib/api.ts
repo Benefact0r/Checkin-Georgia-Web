@@ -113,9 +113,19 @@ export interface AvailDay {
   weekday: string; // "mon" | "tue" | ...
   slots: AvailSlot[];
 }
+export interface AvailResource {
+  id: string;
+  name: string;
+  kind: "staff" | "table" | "seat" | "queue" | "room";
+  capacity: number;
+  bio: string | null;
+  photo_url: string | null;
+  role: string | null; // profession/specialty, e.g. "Barber", "Colorist"
+}
 export interface Availability {
   service_id: string;
   duration_minutes: number;
+  resources: AvailResource[]; // full eligible team for this service
   days: AvailDay[];
 }
 

@@ -5,6 +5,8 @@ import { VERTICAL_CONFIG } from "@/lib/verticals";
 import { FavoriteButton } from "@/components/favorite-button";
 import { RecentlyViewed } from "@/components/recently-viewed";
 import { VenueViewLogger } from "@/components/venue-view-logger";
+import { OpenNowBadge } from "@/components/open-now-badge";
+import { WeeklyHours } from "@/components/weekly-hours";
 import { ContactForm } from "./contact-form";
 
 interface PageProps {
@@ -99,11 +101,14 @@ export default async function VenuePage({ params }: PageProps) {
         <p className="mt-2 text-ink-600">
           {venue.district ? `${venue.district} · ` : ""}{venue.address}
         </p>
-        {venue.avg_rating != null && (
-          <p className="mt-1 text-sm text-ink-500">
-            ⭐ {venue.avg_rating.toFixed(1)} ({venue.review_count})
-          </p>
-        )}
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          {venue.avg_rating != null && (
+            <span className="text-sm text-ink-500">
+              ⭐ {venue.avg_rating.toFixed(1)} ({venue.review_count})
+            </span>
+          )}
+          <OpenNowBadge openNow={venue.open_now} />
+        </div>
         {badges(a).length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {badges(a).map((b, i) => (
@@ -263,6 +268,9 @@ export default async function VenuePage({ params }: PageProps) {
           </ul>
         </section>
       )}
+
+      {/* Opening hours */}
+      <WeeklyHours hours={venue.hours} />
 
       {/* Contact the venue */}
       <section className="mt-10">

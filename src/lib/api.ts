@@ -25,6 +25,8 @@ export interface Venue {
   attributes: Record<string, unknown>;
   lng: number | null;
   lat: number | null;
+  // true = open now, false = closed now, null = hours unknown (show no badge).
+  open_now?: boolean | null;
 }
 
 export interface VenueDetail extends Venue {

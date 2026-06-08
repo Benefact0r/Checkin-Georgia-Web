@@ -143,6 +143,7 @@ export interface AdminVenueDetail extends AdminVenue {
   photos: string[];
   videos: string[];
   attributes: Record<string, unknown>;
+  hours: Record<string, [string, string][]>;
 }
 
 export interface AdminResource {

@@ -3,6 +3,7 @@ import { VERTICAL_CONFIG } from "@/lib/verticals";
 import { districtLabel } from "@/lib/districts";
 import type { VenueCardData } from "@/lib/personalization";
 import { FavoriteButton } from "./favorite-button";
+import { OpenNowBadge } from "./open-now-badge";
 
 /** Reusable venue card — cover, rating, price, district, heart.
  *  Used by the landing sections, favorites, recently-viewed, and the feed. */
@@ -51,6 +52,7 @@ export function VenueCard({
             {price}
           </span>
         )}
+        <OpenNowBadge openNow={venue.open_now} className="absolute bottom-2 left-2" />
       </div>
 
       {/* Body */}

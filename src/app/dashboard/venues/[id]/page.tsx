@@ -29,6 +29,18 @@ const btnPrimary =
   "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-600 disabled:opacity-50";
 const btnGhost =
   "rounded-lg border border-ink-200 px-3 py-1.5 text-sm text-ink-600 hover:border-brand hover:text-brand dark:border-ink-700 dark:text-ink-300";
+const timeInput =
+  "rounded-lg border border-ink-200 px-2 py-1 text-sm focus:border-brand focus:outline-none dark:border-ink-700 dark:bg-ink-900 dark:text-ink-100";
+
+const HOUR_DAYS: { key: string; label: string }[] = [
+  { key: "mon", label: "ორშაბათი" },
+  { key: "tue", label: "სამშაბათი" },
+  { key: "wed", label: "ოთხშაბათი" },
+  { key: "thu", label: "ხუთშაბათი" },
+  { key: "fri", label: "პარასკევი" },
+  { key: "sat", label: "შაბათი" },
+  { key: "sun", label: "კვირა" },
+];
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -110,8 +122,109 @@ export default function VenueEditorPage() {
           onChange={reload}
         />
       )}
+      <HoursSection venue={venue} onSave={reload} />
       <MediaSection venue={venue} onSave={reload} />
     </div>
+  );
+}
+
+// --- Opening hours -----------------------------------------------------------
+function HoursSection({ venue, onSave }: { venue: AdminVenueDetail; onSave: () => void }) {
+  const { token } = useAuth();
+  const [hours, setHours] = useState<Record<string, [string, string][]>>(
+    () => JSON.parse(JSON.stringify(venue.hours ?? {})),
+  );
+  const [busy, setBusy] = useState(false);
+
+  const setBound = (day: string, idx: number, which: 0 | 1, val: string) =>
+    setHours((h) => {
+      const list = (h[day] ?? []).map((iv) => [...iv] as [string, string]);
+      if (!list[idx]) return h;
+      list[idx][which] = val;
+      return { ...h, [day]: list };
+    });
+  const addInterval = (day: string) =>
+    setHours((h) => ({ ...h, [day]: [...(h[day] ?? []), ["09:00", "18:00"]] }));
+  const removeInterval = (day: string, idx: number) =>
+    setHours((h) => {
+      const list = (h[day] ?? []).filter((_, i) => i !== idx);
+      const n = { ...h };
+      if (list.length) n[day] = list;
+      else delete n[day];
+      return n;
+    });
+
+  async function save() {
+    setBusy(true);
+    try {
+      // Keep only open days with complete intervals; empty {} = "unknown".
+      const clean: Record<string, [string, string][]> = {};
+      for (const { key } of HOUR_DAYS) {
+        const list = (hours[key] ?? []).filter(([o, c]) => o && c);
+        if (list.length) clean[key] = list;
+      }
+      await updateVenue(await token(), venue.id, { hours: clean });
+      onSave();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Card title="სამუშაო საათები">
+      <div className="space-y-3">
+        {HOUR_DAYS.map(({ key, label }) => {
+          const list = hours[key] ?? [];
+          return (
+            <div key={key} className="flex flex-wrap items-center gap-2">
+              <span className="w-24 shrink-0 text-sm font-medium text-ink-700 dark:text-ink-300">
+                {label}
+              </span>
+              {list.length === 0 && (
+                <span className="text-sm text-ink-400">დაკეტილია</span>
+              )}
+              {list.map((iv, idx) => (
+                <span key={idx} className="flex items-center gap-1">
+                  <input
+                    type="time"
+                    className={timeInput}
+                    value={iv[0]}
+                    onChange={(e) => setBound(key, idx, 0, e.target.value)}
+                  />
+                  <span className="text-ink-400">–</span>
+                  <input
+                    type="time"
+                    className={timeInput}
+                    value={iv[1]}
+                    onChange={(e) => setBound(key, idx, 1, e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="px-1 text-ink-400 hover:text-accent"
+                    onClick={() => removeInterval(key, idx)}
+                    aria-label="ინტერვალის წაშლა"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              <button type="button" className={btnGhost} onClick={() => addInterval(key)}>
+                + ინტერვალი
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs text-ink-400">
+        დროები თბილისის დროით. ღამის ინტერვალისთვის (მაგ. 20:00–02:00) დახურვის
+        დრო გახსნაზე ნაკლები ჩაწერე.
+      </p>
+      <div className="mt-4">
+        <button className={btnPrimary} disabled={busy} onClick={save}>
+          {busy ? "ინახება…" : "შენახვა"}
+        </button>
+      </div>
+    </Card>
   );
 }
 
